@@ -54,4 +54,24 @@ def get_new_tokens():
         print(t2)
         save_tokens(t1,t2)
 
-#get_new_tokens()
+def is_token_valid():
+    url = 'https://api.fitbit.com/1.1/oauth2/introspect'
+
+    headers = {
+        'Authorization': f'Bearer {ACCESS_TOKEN}',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    data = {'token': f'{ACCESS_TOKEN}'}
+
+    r = requests.post(url, data=data, headers=headers).json()
+    
+    return r['active']
+
+if __name__ == '__main__':
+    if is_token_valid():
+        print('Token is valid')
+    else:
+        get_new_tokens()
+
+    
