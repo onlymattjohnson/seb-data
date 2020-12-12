@@ -24,6 +24,9 @@ def save_tokens(t1, t2):
         file.writelines(data)
 
 def get_new_tokens():
+    global ACCESS_TOKEN
+    global REFRESH_TOKEN
+
     url = 'https://api.fitbit.com/oauth2/token'
     
     client_key = encode_credentials()
@@ -50,9 +53,10 @@ def get_new_tokens():
     else:
         t1 = json_response['access_token']
         t2 = json_response['refresh_token']
-        print(t1)
-        print(t2)
         save_tokens(t1,t2)
+
+        ACCESS_TOKEN = t1
+        REFRESH_TOKEN = t2
 
 def is_token_valid():
     url = 'https://api.fitbit.com/1.1/oauth2/introspect'
@@ -68,9 +72,19 @@ def is_token_valid():
     
     return r['active']
 
+def get_profile():
+    url = 'https://api.fitbit.com/1/user/-/profile.json'
+
+    headers = {'Authorization': f'Bearer {ACCESS_TOKEN}'}
+
+    r = requests.get(url, headers=headers).json()
+
+    print(r)
+
 if __name__ == '__main__':
     if is_token_valid():
         print('Token is valid')
+        get_profile()
     else:
         get_new_tokens()
 
