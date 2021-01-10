@@ -69,8 +69,10 @@ def is_token_valid():
     data = {'token': f'{ACCESS_TOKEN}'}
 
     r = requests.post(url, data=data, headers=headers).json()
-    
-    return r['active']
+    if 'active' in r:
+        return r['active']
+    else:
+        return r['success']
 
 def get_profile():
     url = 'https://api.fitbit.com/1/user/-/profile.json'
