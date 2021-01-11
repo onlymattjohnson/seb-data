@@ -1,4 +1,5 @@
 from base64 import b64encode
+from datetime import date
 from dotenv import load_dotenv
 import json, os, requests
 load_dotenv()
@@ -81,12 +82,24 @@ def get_profile():
 
     r = requests.get(url, headers=headers).json()
 
-    print(r)
+    return r
+
+def get_weight():
+    today = date.today()
+    base_date = today.strftime('%Y-%m-%d')
+
+    headers = {'Authorization': f'Bearer {ACCESS_TOKEN}'}
+    url = f'https://api.fitbit.com/1/user/-/body/log/weight/date/{base_date}/7d.json'
+
+    r = requests.get(url, headers=headers).json()
+
+    return r
 
 if __name__ == '__main__':
     if is_token_valid():
         print('Token is valid')
-        get_profile()
+        w = get_weight()
+        print(w)
     else:
         get_new_tokens()
 
